@@ -221,7 +221,7 @@ INT UEyeCamDriver::setColorMode(string& mode, bool reallocate_buffer) {
   if ((is_err = is_SetColorMode(cam_handle_, color_mode_)) != IS_SUCCESS) {
     ERROR_STREAM("Could not set color mode of [" << cam_name_ <<
         "] to " << mode << " (" << err2str(is_err) << ": " << color_mode_ << " / '" << mode << "'). switching to default mode: mono8");
-        
+
     color_mode_ = IS_CM_MONO8;
     mode = "mono8";
     if ((is_err = is_SetColorMode(cam_handle_, color_mode_)) != IS_SUCCESS) {
@@ -564,21 +564,21 @@ INT UEyeCamDriver::setSoftwareGamma(INT& software_gamma) {
 
   INT is_err = IS_SUCCESS;
 
-  // According to ids this is only possible when the color mode is debayered by the ids driver 
+  // According to ids this is only possible when the color mode is debayered by the ids driver
   if ((color_mode_ == IS_CM_SENSOR_RAW8)  ||
       (color_mode_ == IS_CM_SENSOR_RAW10) ||
       (color_mode_ == IS_CM_SENSOR_RAW12) ||
       (color_mode_ == IS_CM_SENSOR_RAW16)) {
     WARN_STREAM("Software gamma only possible when the color mode is debayered, " <<
-    "could not set software gamma for [" << cam_name_ << "]"); 
-    return IS_NO_SUCCESS;    
+    "could not set software gamma for [" << cam_name_ << "]");
+    return IS_NO_SUCCESS;
   }
 
-  // set software gamma 
+  // set software gamma
   if ((is_err = is_Gamma(cam_handle_, IS_GAMMA_CMD_SET, (void*) &software_gamma, sizeof(software_gamma))) != IS_SUCCESS) {
     WARN_STREAM("Software gamma could not be set for [" << cam_name_ <<
-    "] (" << err2str(is_err) << ")");       
-  }  
+    "] (" << err2str(is_err) << ")");
+  }
 
   return is_err;
 }
@@ -603,11 +603,11 @@ INT UEyeCamDriver::setExposure(bool& auto_exposure, double& auto_exposure_refere
     }
   }
 
-  // Set exposure reference for auto exposure controller 
-  if ((is_err = is_SetAutoParameter (cam_handle_, IS_SET_AUTO_REFERENCE, 
+  // Set exposure reference for auto exposure controller
+  if ((is_err = is_SetAutoParameter (cam_handle_, IS_SET_AUTO_REFERENCE,
     &auto_exposure_reference, 0)) != IS_SUCCESS) {
     WARN_STREAM("Auto exposure reference value could not be set for [" << cam_name_ <<
-    "] (" << err2str(is_err) << ")");      
+    "] (" << err2str(is_err) << ")");
     }
 
   // Set manual exposure timing
@@ -827,14 +827,14 @@ INT UEyeCamDriver::setGpioMode(const int& gpio, int& mode, double& pwm_freq, dou
   IO_GPIO_CONFIGURATION gpioConfiguration;
   gpioConfiguration.u32State = 0;
   IO_PWM_PARAMS m_pwmParams;
-  
-  if (gpio == 1) 
+
+  if (gpio == 1)
     gpioConfiguration.u32Gpio = IO_GPIO_1; // GPIO1 (pin 5).
-  else if (gpio == 2) 
+  else if (gpio == 2)
     gpioConfiguration.u32Gpio = IO_GPIO_2; // GPIO2 (pin 6).
 
   switch (mode) {
-  case 0: gpioConfiguration.u32Configuration = IS_GPIO_INPUT; break;  
+  case 0: gpioConfiguration.u32Configuration = IS_GPIO_INPUT; break;
   case 1: gpioConfiguration.u32Configuration = IS_GPIO_OUTPUT; break;
   case 2:
           gpioConfiguration.u32Configuration = IS_GPIO_OUTPUT;
@@ -842,24 +842,24 @@ INT UEyeCamDriver::setGpioMode(const int& gpio, int& mode, double& pwm_freq, dou
           break;
   case 3: gpioConfiguration.u32Configuration = IS_GPIO_FLASH; break;
   case 4:
-          gpioConfiguration.u32Configuration = IS_GPIO_PWM;  
+          gpioConfiguration.u32Configuration = IS_GPIO_PWM;
           m_pwmParams.dblFrequency_Hz = pwm_freq;
           m_pwmParams.dblDutyCycle = pwm_duty_cycle;
           break;
   case 5: gpioConfiguration.u32Configuration = IS_GPIO_TRIGGER;  break;
   }
-  
+
   // set GPIO regarding the selected pind and mode
-  if ((is_err = is_IO(cam_handle_, IS_IO_CMD_GPIOS_SET_CONFIGURATION, (void*)&gpioConfiguration, sizeof(gpioConfiguration))) != IS_SUCCESS) { 
-    ERROR_STREAM("Tried to set GPIO: " << gpioConfiguration.u32Gpio << " and got error code:  " << is_err); 
+  if ((is_err = is_IO(cam_handle_, IS_IO_CMD_GPIOS_SET_CONFIGURATION, (void*)&gpioConfiguration, sizeof(gpioConfiguration))) != IS_SUCCESS) {
+    ERROR_STREAM("Tried to set GPIO: " << gpioConfiguration.u32Gpio << " and got error code:  " << is_err);
   }
 
-  // Set PWM details if prior change of GPIO was successfull and mode is PWM 
+  // Set PWM details if prior change of GPIO was successfull and mode is PWM
   if ((is_err == IS_SUCCESS) && (mode == 4)) {
     if ((is_err = is_IO(cam_handle_, IS_IO_CMD_PWM_SET_PARAMS, (void*)&m_pwmParams, sizeof(m_pwmParams))) != IS_SUCCESS) {
-      ERROR_STREAM("Tried to set PWM to: " << m_pwmParams.dblFrequency_Hz << " hz and " << m_pwmParams.dblDutyCycle << 
-      " % and got error code:  " << is_err);   
-    }  
+      ERROR_STREAM("Tried to set PWM to: " << m_pwmParams.dblFrequency_Hz << " hz and " << m_pwmParams.dblDutyCycle <<
+      " % and got error code:  " << is_err);
+    }
   }
 
   return is_err;
@@ -930,7 +930,7 @@ INT UEyeCamDriver::setExtTriggerMode() {
       return is_err;
     }
 
-    if ((is_err = is_SetExternalTrigger(cam_handle_, IS_SET_TRIGGER_HI_LO)) != IS_SUCCESS) {
+    if ((is_err = is_SetExternalTrigger(cam_handle_, IS_SET_TRIGGER_LO_HI)) != IS_SUCCESS) {
       ERROR_STREAM("Could not enable falling-edge external trigger mode for [" <<
         cam_name_ << "] (" << err2str(is_err) << ")");
       return is_err;
@@ -980,7 +980,7 @@ INT UEyeCamDriver::setStandbyMode() {
   INT is_err = IS_SUCCESS;
 
   UINT events[] = {IS_SET_EVENT_FRAME};
-    
+
   if (extTriggerModeActive()) {
       if ((is_err = is_Event(cam_handle_,IS_EVENT_CMD_DISABLE, events, sizeof(events))) != IS_SUCCESS) {
         ERROR_STREAM("Could not disable frame event for [" << cam_name_ <<
@@ -991,7 +991,7 @@ INT UEyeCamDriver::setStandbyMode() {
         ERROR_STREAM("Could not exit frame event for [" << cam_name_ <<
           "] (" << err2str(is_err) << ")");
         return is_err;
-      }         
+      }
       if ((is_err = is_SetExternalTrigger(cam_handle_, IS_SET_TRIGGER_OFF)) != IS_SUCCESS) {
         ERROR_STREAM("Could not disable external trigger mode for [" << cam_name_ <<
           "] (" << err2str(is_err) << ")");
@@ -1021,7 +1021,7 @@ INT UEyeCamDriver::setStandbyMode() {
       ERROR_STREAM("Could not exit frame event for [" << cam_name_ <<
         "] (" << err2str(is_err) << ")");
       return is_err;
-    }       
+    }
     if ((is_err = is_StopLiveVideo(cam_handle_, IS_WAIT)) != IS_SUCCESS) {
       ERROR_STREAM("Could not stop live video mode for [" << cam_name_ <<
         "] (" << err2str(is_err) << ")");

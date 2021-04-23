@@ -216,7 +216,7 @@ public:
   /**
    * Updates current camera handle's software gamma to specified parameter.
    *
-   * According to ids this is only possible when the color mode is debayered by the ids driver 
+   * According to ids this is only possible when the color mode is debayered by the ids driver
    *
    * \param software_gamma gamma value in percentage
    *
@@ -230,7 +230,7 @@ public:
    *
    * \param auto_exposure Updates camera's hardware auto shutter / auto shutter mode.
    *   Will be deactivated if camera does not support mode.
-   * \param auto_exposure_reference sets the reference value for the auto_exposure controller. 
+   * \param auto_exposure_reference sets the reference value for the auto_exposure controller.
    * \param exposure_ms Manual exposure setting, in ms. Valid value range depends on
    *   current camera pixel clock rate.
    *
@@ -294,7 +294,7 @@ public:
    * \param mode for GPIO pin {0: input, 1: output low, 2: output high, 3: flash, 4: pwm output, 5: trigger input}.
    * \param pwm_freq frequency if pwm output is selected as the mode
    * \param pwm_duty_cycle duty cycle if pwm output is selected as the mode
-   * 
+   *
    * \return IS_SUCCESS if successful, error flag otherwise (see err2str).
    */
   INT setGpioMode(const INT& gpio, INT& mode, double& pwm_freq, double& pwm_duty_cycle);
@@ -385,7 +385,7 @@ public:
 
   inline bool extTriggerModeActive() {
     return ((cam_handle_ != HIDS(0)) &&
-        (is_SetExternalTrigger(cam_handle_, IS_GET_EXTERNALTRIGGER) == IS_SET_TRIGGER_HI_LO) &&
+        (is_SetExternalTrigger(cam_handle_, IS_GET_EXTERNALTRIGGER) == IS_SET_TRIGGER_LO_HI) &&
         (is_CaptureVideo(cam_handle_, IS_GET_LIVE) == TRUE));
   }
 
@@ -453,15 +453,15 @@ protected:
    * then force-updates to default settings if current ones are not supported
    * by this driver wrapper (ueye_cam), and finally force (re-)allocates
    * internal frame buffer.
-   * 
+   *
    * This function is intended to be called internally, after opening a camera handle
    * (in connectCam()) or after loading a UEye camera configuration file
    * (in loadCamConfig()), where the camera may be already operating with a
    * non-supported setting.
-   * 
+   *
    * \param dft_mode_str: default color mode to switch to, if current color mode
    *   is not supported by this driver wrapper. Valid values: {"rgb8", "bgr8", "mono8", "bayer_rggb8"}
-   * 
+   *
    * \return IS_SUCCESS if successful, error flag otherwise (see err2str).
    */
   virtual INT syncCamConfig(std::string dft_mode_str = "mono8");
@@ -473,7 +473,7 @@ protected:
   /**
    * (Re-)allocates internal frame buffer after querying current
    * area of interest (resolution), and configures IDS driver to use this buffer.
-   * 
+   *
    * \return IS_SUCCESS if successful, error flag otherwise (see err2str).
    */
   INT reallocateCamBuffer();
