@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
   <node name="check_ueye_api" pkg="ueye_cam" type="check_ueye_api" required="true" />
-  <arg name="nodelet_manager_name" default="nodelet_manager" />
-  <arg name="camera_name" default="camera" />
+  <arg name="nodelet_manager_name" default="nodelet_manager_name" />
+  <arg name="camera_name" default="test" />
 
   <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager_name)" args="manager" output="screen" />
 
@@ -12,9 +12,9 @@
     <param name="camera_topic" type="str" value="image_raw" />
     <param name="camera_id" type="int" value="2" /> <!-- 0 = any camera; 1+: camera ID -->
     <param name="camera_intrinsics_file" type="string" value="$(env HOME)/.ros/camera_info/$(arg camera_name).yaml" /> <!-- default: ~/.ros/camera_info/<camera_name>.yaml -->
-<!--    <param name="camera_parameters_file" type="string" value="$(env HOME)/Desktop/UI525xCP-C_conf_test.ini" />-->
+    <param name="camera_parameters_file" type="string" value="$(env HOME)/Desktop/UI525xCP-C_conf_test.ini" />
     <!-- default: ~/.ros/camera_conf/<camera_name>.ini -->
-    <param name="ext_trigger_mode" type="bool" value="true" /> <!-- if False, then camera will operate in free-run mode; otherwise, frames need to be triggered by hardware signal (falling-edge) on digital input pin of camera -->
+    <param name="ext_trigger_mode" type="bool" value="false" /> <!-- if False, then camera will operate in free-run mode; otherwise, frames need to be triggered by hardware signal (falling-edge) on digital input pin of camera -->
 
     <!-- the following are optional camera configuration parameters:
          they will be loaded on the camera after the .ini configuration
